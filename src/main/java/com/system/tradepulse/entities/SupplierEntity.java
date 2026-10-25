@@ -6,32 +6,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class SupplierEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String sku;
+    private String companyName;
 
     @Column
-    private String name;
+    private String contactEmail;
 
     @Column
-    private BigDecimal basePriceInr;
+    private String country;
 
-    @Column
-    private Integer stockQuantity;
-
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Supplier supplier;
+    @OneToMany(mappedBy = "supplierEntity")
+    private List<ProductEntity> productEntity = new ArrayList<>();
 }

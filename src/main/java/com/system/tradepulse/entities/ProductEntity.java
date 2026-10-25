@@ -6,31 +6,32 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.math.BigDecimal;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Supplier {
+public class ProductEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String companyName;
+    private String sku;
 
     @Column
-    private String contactEmail;
+    private String name;
 
     @Column
-    private String country;
+    private BigDecimal basePriceInr;
 
-    @OneToMany(mappedBy = "supplier")
-    private List<Product> product = new ArrayList<>();
+    @Column
+    private Integer stockQuantity;
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private SupplierEntity supplierEntity;
 }
