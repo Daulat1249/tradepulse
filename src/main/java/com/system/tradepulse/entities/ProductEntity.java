@@ -31,7 +31,7 @@ public class ProductEntity {
     @Column
     private Integer stockQuantity;
 
-    @ManyToOne
+    @ManyToOne  //many to one is the owning side
     @JoinColumn(nullable = false)
     private SupplierEntity supplierEntity;
 }

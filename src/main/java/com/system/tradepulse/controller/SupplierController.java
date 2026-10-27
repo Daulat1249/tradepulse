@@ -1,7 +1,11 @@
 package com.system.tradepulse.controller;
 
+import com.system.tradepulse.advices.ApiResponse;
 import com.system.tradepulse.dto.SupplierDTO;
 import com.system.tradepulse.service.SupplierService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +22,9 @@ public class SupplierController {
     }
 
     @PostMapping("/suppliers")
-    public SupplierDTO createNewSupplier(@RequestBody SupplierDTO supplierDTO){
-        return supplierService.createNewSupplier(supplierDTO);
+    public ResponseEntity<ApiResponse<SupplierDTO>> createNewSupplier(@RequestBody @Valid SupplierDTO supplierDTO){
+        SupplierDTO savedDTO = supplierService.createNewSupplier(supplierDTO);
+        ApiResponse<SupplierDTO> apiResponse = new ApiResponse<>(savedDTO);
+        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 }
