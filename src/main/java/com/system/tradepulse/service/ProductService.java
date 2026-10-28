@@ -1,6 +1,7 @@
 package com.system.tradepulse.service;
 
 import com.system.tradepulse.dto.ProductDTO;
+import com.system.tradepulse.dto.ProductUpdateDTO;
 import com.system.tradepulse.dto.SupplierDTO;
 import com.system.tradepulse.entities.ProductEntity;
 import com.system.tradepulse.entities.SupplierEntity;
@@ -10,6 +11,8 @@ import com.system.tradepulse.repositories.SupplierRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -26,4 +29,13 @@ public class ProductService {
         ProductEntity savedEntity = productRepository.save(productEntity);
         return modelMapper.map(savedEntity, ProductDTO.class);
     }
+
+    public ProductDTO updateProduct(Long productId, ProductUpdateDTO productUpdateDTO){
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found with id:"+ productId));
+        productEntity.setBasePriceInr(productUpdateDTO.getBasePriceInr());
+        productEntity.setStockQuantity(productUpdateDTO.getStockQuantity());
+        ProductEntity savedProduct = productRepository.save(productEntity);
+        return modelMapper.map(savedProduct, ProductDTO.class);
+    }
+
 }
