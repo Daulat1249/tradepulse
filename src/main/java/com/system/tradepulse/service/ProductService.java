@@ -10,9 +10,13 @@ import com.system.tradepulse.repositories.ProductRepository;
 import com.system.tradepulse.repositories.SupplierRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +40,18 @@ public class ProductService {
         productEntity.setStockQuantity(productUpdateDTO.getStockQuantity());
         ProductEntity savedProduct = productRepository.save(productEntity);
         return modelMapper.map(savedProduct, ProductDTO.class);
+    }
+
+    public Page<ProductDTO> getAllProducts(Integer pageNumber, Integer PAGE_SIZE, String sortBy){
+        Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE, Sort.by(sortBy));
+        Page<ProductEntity> productEntities = productRepository.findAll(pageable);
+        return productEntities.map(productEntity -> modelMapper.map(productEntity, ProductDTO.class));
+
+        /*return productEntities.getContent()
+                .stream()
+                .map(productEntity -> modelMapper.map(productEntity, ProductDTO.class))
+                .toList();  //return type in this case will be List<ProductDTO>
+                */
     }
 
 }

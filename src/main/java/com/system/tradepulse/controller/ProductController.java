@@ -6,6 +6,7 @@ import com.system.tradepulse.dto.ProductUpdateDTO;
 import com.system.tradepulse.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,5 +32,13 @@ public class ProductController {
         ProductDTO savedProduct = productService.updateProduct(id, productDTO);
         ApiResponse<ProductDTO> apiResponse = new ApiResponse<>(savedProduct);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/products")
+    public ResponseEntity<ApiResponse<Page<ProductDTO>>> getAllProducts(@RequestParam(defaultValue = "0") Integer pageNumber,
+                                                                        @RequestParam(defaultValue = "10") Integer PAGE_SIZE,
+                                                                        @RequestParam(defaultValue = "id") String sortBy){
+        Page<ProductDTO> products = productService.getAllProducts(pageNumber, PAGE_SIZE, sortBy);
+        return ResponseEntity.ok(new ApiResponse<>(products));
     }
 }
