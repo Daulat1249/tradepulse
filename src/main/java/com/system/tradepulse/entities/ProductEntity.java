@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import java.math.BigDecimal;
 
@@ -13,7 +15,8 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductEntity {
+@Audited
+public class ProductEntity extends AuditableEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,5 +36,6 @@ public class ProductEntity {
 
     @ManyToOne  //many to one is the owning side
     @JoinColumn(nullable = false)
+    @NotAudited
     private SupplierEntity supplierEntity;
 }
