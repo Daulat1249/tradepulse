@@ -2,6 +2,7 @@ package com.system.tradepulse.controller;
 
 import com.system.tradepulse.advices.ApiResponse;
 import com.system.tradepulse.dto.ProductDTO;
+import com.system.tradepulse.dto.ProductPriceQuoteDTO;
 import com.system.tradepulse.dto.ProductUpdateDTO;
 import com.system.tradepulse.service.ProductService;
 import jakarta.validation.Valid;
@@ -40,5 +41,12 @@ public class ProductController {
                                                                         @RequestParam(defaultValue = "id") String sortBy){
         Page<ProductDTO> products = productService.getAllProducts(pageNumber, PAGE_SIZE, sortBy);
         return ResponseEntity.ok(new ApiResponse<>(products));
+    }
+
+    @GetMapping("/products/{id}/quote")
+    public ResponseEntity<ApiResponse<ProductPriceQuoteDTO>> getProductPriceQuote(@PathVariable Long id, @RequestParam(defaultValue = "USD") String currency){
+        ProductPriceQuoteDTO productPriceQuoteDTO = productService.getProductPriceQuote(id,currency);
+        ApiResponse<ProductPriceQuoteDTO> apiResponse = new ApiResponse<>(productPriceQuoteDTO);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 }
