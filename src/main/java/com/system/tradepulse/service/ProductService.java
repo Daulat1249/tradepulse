@@ -1,8 +1,7 @@
 package com.system.tradepulse.service;
 
-import com.system.tradepulse.dto.ProductDTO;
-import com.system.tradepulse.dto.ProductUpdateDTO;
-import com.system.tradepulse.dto.SupplierDTO;
+import com.system.tradepulse.client.impl.CurrencyExchangeClientImpl;
+import com.system.tradepulse.dto.*;
 import com.system.tradepulse.entities.ProductEntity;
 import com.system.tradepulse.entities.SupplierEntity;
 import com.system.tradepulse.exceptions.ResourceNotFoundException;
@@ -16,7 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +27,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final SupplierRepository supplierRepository;
     private final ModelMapper modelMapper;
+    private final CurrencyExchangeClientImpl currencyExchangeClientImpl;
 
     public ProductDTO createProductById(ProductDTO productDTO, Long supplierId){
         SupplierEntity supplierEntity = supplierRepository.findById(supplierId).orElseThrow(() -> new ResourceNotFoundException("Supplier Not Found with id: "+supplierId));
@@ -52,6 +55,25 @@ public class ProductService {
                 .map(productEntity -> modelMapper.map(productEntity, ProductDTO.class))
                 .toList();  //return type in this case will be List<ProductDTO>
                 */
+    }
+
+    public ProductPriceQuoteDTO getProductPriceQuote(Long productId, String currency){
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("product Not found with id: "+productId));
+        String currencyUpper = currency.toUpperCase();
+        CurrencyExchangeDTO currencyExchangeDTO = currencyExchangeClientImpl.getCurrentExchange(currencyUpper);
+        Map<String, BigDecimal> tempRate= currencyExchangeDTO.getRates();
+        BigDecimal currentRate = tempRate.get(currencyUpper);
+        BigDecimal convertedPrice = productEntity.getBasePriceInr().multiply(currentRate);
+
+        ProductPriceQuoteDTO productPriceQuoteDTO = new ProductPriceQuoteDTO();
+        productPriceQuoteDTO.setConvertedPrice(convertedPrice);
+        productPriceQuoteDTO.setProductId(productId);
+        productPriceQuoteDTO.setExchangeRate(currentRate);
+        productPriceQuoteDTO.setProductName(productEntity.getName());
+        productPriceQuoteDTO.setTargetCurrency(currencyUpper);
+        productPriceQuoteDTO.setBasePriceInr(productEntity.getBasePriceInr());
+
+        return productPriceQuoteDTO;
     }
 
 }
