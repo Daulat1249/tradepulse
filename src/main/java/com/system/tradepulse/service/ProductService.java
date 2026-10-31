@@ -73,7 +73,6 @@ public class ProductService {
         Map<String, BigDecimal> tempRate= currencyExchangeDTO.getRates();
         BigDecimal currentRate = tempRate.get(currencyUpper);
         BigDecimal convertedPrice = productEntity.getBasePriceInr().multiply(currentRate);
-
         log.debug("Currency converted by getProductPriceQuote");
         ProductPriceQuoteDTO productPriceQuoteDTO = new ProductPriceQuoteDTO();
         productPriceQuoteDTO.setConvertedPrice(convertedPrice);
