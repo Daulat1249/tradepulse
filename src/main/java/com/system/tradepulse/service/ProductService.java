@@ -9,6 +9,8 @@ import com.system.tradepulse.repositories.ProductRepository;
 import com.system.tradepulse.repositories.SupplierRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +30,11 @@ public class ProductService {
     private final SupplierRepository supplierRepository;
     private final ModelMapper modelMapper;
     private final CurrencyExchangeClientImpl currencyExchangeClientImpl;
+<<<<<<< HEAD
+
+    Logger log = LoggerFactory.getLogger(CurrencyExchangeClientImpl.class);
+=======
+>>>>>>> 03654b2127463b0a4222963f1ab84a2576bd81e8
 
     public ProductDTO createProductById(ProductDTO productDTO, Long supplierId){
         SupplierEntity supplierEntity = supplierRepository.findById(supplierId).orElseThrow(() -> new ResourceNotFoundException("Supplier Not Found with id: "+supplierId));
@@ -42,6 +49,8 @@ public class ProductService {
         productEntity.setBasePriceInr(productUpdateDTO.getBasePriceInr());
         productEntity.setStockQuantity(productUpdateDTO.getStockQuantity());
         ProductEntity savedProduct = productRepository.save(productEntity);
+        log.info("Price is updated for productId: {}, productUpateDTO.getBasePriceInr(): {}", productId, savedProduct.getBasePriceInr());
+        log.info("Stock Quantity Updated productEntity.setStockQuantity: {}", savedProduct.getStockQuantity());
         return modelMapper.map(savedProduct, ProductDTO.class);
     }
 
@@ -58,13 +67,21 @@ public class ProductService {
     }
 
     public ProductPriceQuoteDTO getProductPriceQuote(Long productId, String currency){
+<<<<<<< HEAD
+        log.debug("Starting price quote calculation for productId: {}",productId);
+=======
+>>>>>>> 03654b2127463b0a4222963f1ab84a2576bd81e8
         ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("product Not found with id: "+productId));
         String currencyUpper = currency.toUpperCase();
         CurrencyExchangeDTO currencyExchangeDTO = currencyExchangeClientImpl.getCurrentExchange(currencyUpper);
         Map<String, BigDecimal> tempRate= currencyExchangeDTO.getRates();
         BigDecimal currentRate = tempRate.get(currencyUpper);
         BigDecimal convertedPrice = productEntity.getBasePriceInr().multiply(currentRate);
+<<<<<<< HEAD
+        log.debug("Currency converted by getProductPriceQuote");
+=======
 
+>>>>>>> 03654b2127463b0a4222963f1ab84a2576bd81e8
         ProductPriceQuoteDTO productPriceQuoteDTO = new ProductPriceQuoteDTO();
         productPriceQuoteDTO.setConvertedPrice(convertedPrice);
         productPriceQuoteDTO.setProductId(productId);
