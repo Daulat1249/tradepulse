@@ -5,6 +5,8 @@ import com.system.tradepulse.dto.ProductDTO;
 import com.system.tradepulse.dto.ProductPriceQuoteDTO;
 import com.system.tradepulse.dto.ProductUpdateDTO;
 import com.system.tradepulse.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,10 +19,12 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
+@Tag(name = "ProductController")
 public class ProductController {
 
     private final ProductService productService;
 
+    @Operation
     @PostMapping(path = "/suppliers/{supplierId}/products")
     public ResponseEntity<ApiResponse<ProductDTO>> createProductById(@PathVariable(name = "supplierId") Long supplierId, @RequestBody @Valid ProductDTO productDTO) {
         ProductDTO savedProduct = productService.createProductById(productDTO, supplierId);
@@ -28,6 +32,7 @@ public class ProductController {
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
+    @Operation
     @PutMapping(path = "/products/{id}/price")
     public ResponseEntity<ApiResponse<ProductDTO>> updateProduct(@RequestBody @Valid ProductUpdateDTO productDTO, @PathVariable Long id){
         ProductDTO savedProduct = productService.updateProduct(id, productDTO);

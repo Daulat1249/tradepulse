@@ -2,6 +2,7 @@ package com.system.tradepulse.client.impl;
 
 import com.system.tradepulse.dto.CurrencyExchangeDTO;
 import com.system.tradepulse.exceptions.ResourceNotFoundException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
@@ -13,6 +14,7 @@ import java.util.Locale;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Tag(name = "CurrencyExchangeClient")
 public class CurrencyExchangeClientImpl {
 
     private final RestClient restClient;
